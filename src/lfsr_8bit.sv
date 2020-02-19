@@ -26,6 +26,7 @@ module lfsr_8bit #(
     input  logic                      clk_i,
     input  logic                      rst_ni,
     input  logic                      en_i,
+    input  logic                      flush_i,
     output logic [WIDTH-1:0]          refill_way_oh,
     output logic [$clog2(WIDTH)-1:0]  refill_way_bin
 );
@@ -42,8 +43,11 @@ module lfsr_8bit #(
 
         shift_d = shift_q;
 
-        if (en_i)
+        if (flush_i) begin
+            shift_d = SEED;
+        end else if (en_i) begin
             shift_d = {shift_q[6:0], shift_in};
+        end
 
         // output assignment
         refill_way_oh = 'b0;
